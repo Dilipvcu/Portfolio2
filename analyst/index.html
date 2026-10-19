@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dilip Bukkambudhi Ganesh, Data Reporting Analyst: SQL, Excel, Power BI, Tableau and data quality.">
+<title>Dilip Ganesh Analytics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column with a "run log" panel in the hero; sections read like stages of a pipeline */
+:root {
+  --bg: #F5F7F5;
+  --surface: #FFFFFF;
+  --fg: #142019;
+  --muted: #56645D;
+  --line: #DCE3DF;
+  --accent: #0D7A62;
+  --accent-soft: #E1F1EC;
+  --log-bg: #102019;
+  --log-fg: #CFE3DA;
+  --log-dim: #7E978C;
+  --log-ok: #5FD3AF;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1512; --surface: #141D19; --fg: #E3ECE7; --muted: #95A69E; --line: #24312B;
+    --accent: #5BCFAE; --accent-soft: #17302A; --log-bg: #09100D; --log-fg: #CFE3DA; --log-dim: #6F887D; --log-ok: #5FD3AF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1512; --surface: #141D19; --fg: #E3ECE7; --muted: #95A69E; --line: #24312B;
+  --accent: #5BCFAE; --accent-soft: #17302A; --log-bg: #09100D; --log-fg: #CFE3DA; --log-dim: #6F887D; --log-ok: #5FD3AF;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+}
+.wrap {
+  max-width: 1040px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* Nav */
+nav { padding-block: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.mark { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.mark b { color: var(--fg); font-weight: 500; }
+.navlinks { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; }
+.navlinks a { color: var(--muted); text-decoration: none; }
+.navlinks a:hover { color: var(--fg); }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; padding-block: 48px 72px; }
+.hero > * { min-width: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 16px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 6vw, 64px); line-height: 1.02; letter-spacing: -0.02em; margin: 0 0 20px; text-wrap: balance; }
+.lede { font-size: 18px; color: var(--muted); max-width: 34em; margin: 0 0 28px; }
+.lede strong { color: var(--fg); font-weight: 600; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 8px;
+  font: 500 15px var(--font-body); text-decoration: none; cursor: pointer; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg); transition: border-color .15s, transform .15s;
+}
+.btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.contact { margin-top: 22px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.contact .addr { user-select: all; color: var(--fg); }
+.copy { font: 500 12px var(--font-mono); background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 6px; padding: 3px 8px; cursor: pointer; }
+.copy:hover { color: var(--fg); border-color: var(--accent); }
+
+/* Run log */
+.log { background: var(--log-bg); color: var(--log-fg); border-radius: 12px; padding: 20px 22px; font-family: var(--font-mono); font-size: 13px; line-height: 1.75; overflow-x: auto; }
+.log-head { display: flex; justify-content: space-between; color: var(--log-dim); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 12px; gap: 12px; }
+.log .ln { white-space: nowrap; }
+.skills > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.log .t { color: var(--log-dim); }
+.log .ok { color: var(--log-ok); }
+.log .k { color: #F2C572; }
+.log-foot { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.log-foot .big { font-family: var(--font-display); font-size: 22px; color: #fff; }
+.log-foot .lbl { color: var(--log-dim); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+@media (prefers-reduced-motion: no-preference) {
+  .log .ln { animation: rise .45s both; }
+  .log .ln:nth-child(2){animation-delay:.08s}.log .ln:nth-child(3){animation-delay:.16s}.log .ln:nth-child(4){animation-delay:.24s}.log .ln:nth-child(5){animation-delay:.32s}.log .ln:nth-child(6){animation-delay:.4s}
+  @keyframes rise { from { opacity: .25; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}
+
+/* Sections */
+section { padding-block: 56px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: 220px 1fr; gap: 32px; }
+.sec-head > * { min-width: 0; }
+h2 { font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+.sec-sub { color: var(--muted); font-size: 14px; margin-top: 6px; }
+h3 { font-family: var(--font-display); font-weight: 500; font-size: 21px; margin: 0; line-height: 1.25; text-wrap: balance; }
+
+/* Featured project */
+.feature { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px; display: grid; gap: 18px; }
+.feature .tag { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 12.5px; }
+.flow span.node { padding: 6px 10px; border-radius: 6px; background: var(--accent-soft); color: var(--fg); }
+.flow span.arrow { color: var(--muted); }
+.feature ul, .job ul, .proj p { margin: 0; }
+.feature ul, .job ul { padding-left: 18px; display: grid; gap: 8px; }
+.feature li, .job li { max-width: 68ch; }
+.stack { display: flex; flex-wrap: wrap; gap: 6px; }
+.stack span { font-family: var(--font-mono); font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
+
+.projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 32px; margin-top: 32px; }
+.proj { display: grid; gap: 10px; align-content: start; padding-top: 16px; border-top: 2px solid var(--fg); }
+.proj > * { min-width: 0; }
+.proj p { color: var(--muted); }
+
+/* Experience */
+.jobs { display: grid; gap: 40px; }
+.job { display: grid; gap: 12px; }
+.job-top { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; }
+.when { font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.role { color: var(--accent); font-weight: 500; }
+.metric { font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+
+/* Skills */
+.skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 32px; }
+.skills dt { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--accent); margin-bottom: 6px; }
+.skills dd { margin: 0; color: var(--fg); }
+
+/* Education */
+.edu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.edu div { display: grid; gap: 4px; align-content: start; }
+.edu .small { color: var(--muted); font-size: 14px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 40px 56px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+footer .big { font-family: var(--font-display); font-size: 26px; font-weight: 700; }
+
+@media (max-width: 820px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; padding-block: 24px 48px; }
+  .sec-head { grid-template-columns: 1fr; gap: 20px; }
+  .projects, .skills { grid-template-columns: 1fr; }
+  .edu { grid-template-columns: 1fr; }
+}
+</style>
+
+<style>
+.rpt { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; display: grid; gap: 14px; }
+.rpt-head { display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); flex-wrap: wrap; }
+.rpt-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.kpi { border-top: 2px solid var(--accent); padding-top: 8px; }
+.kpi .v { font-family: var(--font-display); font-size: 24px; font-weight: 700; line-height: 1.1; }
+.kpi .l { font-size: 13px; color: var(--muted); }
+.rpt-table { overflow-x: auto; }
+.rpt table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.rpt th { text-align: left; font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); }
+.rpt td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.pill { font-family: var(--font-mono); font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.pill.warn { background: color-mix(in srgb, #D98E04 18%, transparent); color: #B87503; }
+.rpt-note { font-size: 12px; color: var(--muted); }
+</style>
+<style>body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="mark"><b>dilip.ganesh</b> / data-reporting-analyst</div>
+    <div class="navlinks">
+      <a href="#work">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="resume.pdf" target="_blank" rel="noopener">Resume</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Data Reporting Analyst · Richmond, VA</p>
+      <h1>Dilip Bukkambudhi Ganesh</h1>
+      <p class="lede">I turn data requests into <strong>accurate, published reports</strong>. Four-plus years of data file analysis, SQL on relational databases, and reporting in <strong>Excel, Power BI and Tableau</strong>, with an M.S. in Computer Science from VCU. At Entropik, I helped cut financial reconciliation onboarding from <strong>8–10 weeks to hours</strong>.</p>
+      <div class="actions">
+        <a class="btn primary" href="resume.pdf" target="_blank" rel="noopener">View resume (PDF)</a>
+        <a class="btn" href="https://www.linkedin.com/in/dilip-ganesh-1b8b50247/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+      <div class="contact">
+        <span class="addr" id="email">dilipbganesh0205@gmail.com</span>
+        <button class="copy" id="copyBtn" type="button">Copy</button>
+      </div>
+    </div>
+
+    <div class="rpt" aria-label="Example report summary">
+      <div class="rpt-head"><span>Reconciliation onboarding report</span><span>Sample layout</span></div>
+      <div class="rpt-kpis">
+        <div class="kpi"><div class="v">8–10 wks</div><div class="l">Manual onboarding before</div></div>
+        <div class="kpi"><div class="v">Hours</div><div class="l">After automation</div></div>
+      </div>
+      <div class="rpt-table">
+        <table>
+          <thead><tr><th>Check</th><th>Scope</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>File validation</td><td>Thousands of records</td><td><span class="pill">Passed</span></td></tr>
+            <tr><td>Exception isolation</td><td>Per record</td><td><span class="pill">Traceable</span></td></tr>
+            <tr><td>Discrepancy review</td><td>SQL analysis</td><td><span class="pill warn">Flagged</span></td></tr>
+            <tr><td>Audit trail</td><td>Every decision</td><td><span class="pill">Complete</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rpt-note">Illustrates the kind of checks behind my Entropik reports, not client data.</div>
+    </div>
+  </header>
+
+  <section id="work">
+    <div class="sec-head">
+      <div>
+        <h2>Projects</h2>
+        <div class="sec-sub">Healthcare, finance and data quality</div>
+      </div>
+      <div>
+        <article class="feature">
+          <div class="tag">Featured project · Healthcare</div>
+          <h3>Patient Management Workflow Automation</h3>
+          <div class="flow" aria-label="Project steps">
+            <span class="node">map patient and staff processes</span><span class="arrow">→</span>
+            <span class="node">automate workflows</span><span class="arrow">→</span>
+            <span class="node">validate patient data</span><span class="arrow">→</span>
+            <span class="node">Excel status reports</span>
+          </div>
+          <ul>
+            <li>Worked directly with patients and care staff to map their day-to-day processes, then built automated workflows for a patient management system that replaced manual record-keeping and follow-up steps.</li>
+            <li>Validated patient data for accuracy and built Excel reports to track workflow status and turnaround, handling patient information with care for privacy.</li>
+          </ul>
+          <div class="stack"><span>Python</span><span>SQL</span><span>Excel</span></div>
+        </article>
+
+        <div class="projects">
+          <article class="proj">
+            <h3>Cloud Data Pipeline for Financial Transactions</h3>
+            <p>Transaction files landing in S3 trigger Spark jobs that clean, deduplicate and aggregate data into partitioned Parquet tables, with data-quality checks that flag schema drift and anomalous records.</p>
+            <div class="stack"><span>Spark</span><span>SQL</span><span>AWS</span><span>Python</span></div>
+          </article>
+          <article class="proj">
+            <h3>ML-Driven Expense Intelligence</h3>
+            <p>A Python analytics layer that classifies spending and flags anomalous transactions, with a dashboard offering real-time filtering.</p>
+            <div class="stack"><span>Python</span><span>Pandas</span><span>MongoDB</span><span>React</span></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="sec-head">
+      <div>
+        <h2>Experience</h2>
+        <div class="sec-sub">Reporting, data files and SQL since 2020</div>
+      </div>
+      <div class="jobs">
+        <article class="job">
+          <div class="job-top">
+            <h3>Springer Capital <span class="role">· Data Engineer</span></h3>
+            <span class="when">Jul 2026 – Present · Remote</span>
+          </div>
+          <ul>
+            <li>Build and publish Tableau and Power BI reports on pipeline outputs, and handle ad hoc data requests from business stakeholders, clarifying requirements so each report meets their needs.</li>
+            <li>Build and maintain Spark and SQL pipelines on AWS that ingest, clean and transform financial data for analytics and reporting.</li>
+            <li>Apply data-quality checks and validation rules to pipeline outputs.</li>
+          </ul>
+        </article>
+        <article class="job">
+          <div class="job-top">
+            <h3>Entropik <span class="role">· Machine Learning Engineer</span></h3>
+            <span class="when">Nov 2022 – Dec 2024 · Bengaluru</span>
+          </div>
+          <ul>
+            <li>Built and published Power BI reports on reconciliation data, tracking onboarding progress, match rates and data exceptions, and served as the data liaison between engineering and business and client stakeholders.</li>
+            <li>Automated financial reconciliation onboarding by validating and mapping client financial data: <span class="metric">8–10 weeks → hours</span>.</li>
+            <li>Analyzed and validated client data files across thousands of financial records, isolating bad records so every exception was traceable.</li>
+            <li>Wrote SQL to analyze reconciliation data, investigate discrepancies and check data quality before results reached clients.</li>
+            <li>Kept a complete audit trail of every automated reconciliation decision, so any result could be traced and verified.</li>
+          </ul>
+        </article>
+        <article class="job">
+          <div class="job-top">
+            <h3>Recro <span class="role">· Data Analyst</span></h3>
+            <span class="when">Jun 2020 – Nov 2022 · India</span>
+          </div>
+          <ul>
+            <li>Designed and optimized relational MySQL schemas and SQL queries across services, improving query performance and keeping data consistent.</li>
+            <li>Built Apache Spark jobs to process and aggregate application data, and Tableau dashboards reporting usage and performance trends.</li>
+            <li>Led enhancement testing, raising coverage from <span class="metric">~40% → ~75%</span> and cutting post-release defects by <span class="metric">~30%</span>.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-head">
+      <div>
+        <h2>Skills</h2>
+        <div class="sec-sub">What I reach for</div>
+      </div>
+      <dl class="skills">
+        <div><dt>Data &amp; databases</dt><dd>SQL, MySQL, PostgreSQL, data modeling, MongoDB, Python (Pandas, NumPy)</dd></div>
+        <div><dt>Reporting &amp; files</dt><dd>Excel (pivot tables, lookups, formulas), Outlook, ad hoc and recurring reports, data file analysis, report testing</dd></div>
+        <div><dt>BI &amp; visualization</dt><dd>Power BI, Tableau, Looker, Amazon QuickSight</dd></div>
+        <div><dt>Data quality</dt><dd>Validation and reconciliation, anomaly and schema-drift checks, audit trails, access control</dd></div>
+        <div><dt>Big data &amp; cloud</dt><dd>Apache Spark, Kafka, AWS (S3, Lambda, EC2)</dd></div>
+        <div><dt>Analytics</dt><dd>Statistical analysis, anomaly detection, regression and classification models</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="sec-head">
+      <div><h2>Education</h2></div>
+      <div class="edu">
+        <div><h3>M.S. Computer Science</h3><span class="small">Virginia Commonwealth University · GPA 3.5+</span><span class="small">Data Science, Machine Learning</span></div>
+        <div><h3>B.S. Computer Science</h3><span class="small">CMR Institute of Technology</span></div>
+        <div><h3>Certifications</h3><span class="small">Google AI Essentials (2026)</span><span class="small">Python Certificate (Prepinsta, 2023)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="big">Open to data analyst and reporting roles.</div>
+      <div class="sec-sub">Based in Richmond, VA</div>
+    </div>
+    <div class="actions">
+      <a class="btn primary" href="resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a>
+      <a class="btn" href="https://www.linkedin.com/in/dilip-ganesh-1b8b50247/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+document.getElementById('copyBtn').addEventListener('click', function () {
+  var btn = this, text = document.getElementById('email').textContent;
+  function done(msg){ btn.textContent = msg; setTimeout(function(){ btn.textContent = 'Copy'; }, 1600); }
+  function fallback(){
+    try { var r = document.createRange(); r.selectNodeContents(document.getElementById('email'));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done('Selected'); } catch (e) {}
+  }
+  try {
+    navigator.clipboard.writeText(text).then(function(){ done('Copied'); }, fallback);
+  } catch (e) { fallback(); }
+});
+</script>
+
+</body>
+</html>
